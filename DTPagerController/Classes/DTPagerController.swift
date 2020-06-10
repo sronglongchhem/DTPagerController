@@ -38,6 +38,8 @@ open class DTPagerController: UIViewController, UIScrollViewDelegate {
             view.setNeedsLayout()
         }
     }
+    
+    open var topMargin: CGFloat = 0
 
     /// Height of segmented control bar
     /// Get only
@@ -162,6 +164,18 @@ open class DTPagerController: UIViewController, UIScrollViewDelegate {
 
         super.init(nibName: nil, bundle: nil)
     }
+    
+    /// Initializer
+    /// - parameters:
+    ///     - viewControllers: array of child view controllers displayed in pager controller.
+    public init(viewControllers controllers: [UIViewController], topMargin marginTop: CGFloat) {
+
+        pageSegmentedControl = DTSegmentedControl(items: [])
+        viewControllers = controllers
+        self.topMargin = marginTop
+
+        super.init(nibName: nil, bundle: nil)
+    }
 
     /// Initializer
     /// - parameters:
@@ -213,7 +227,7 @@ open class DTPagerController: UIViewController, UIScrollViewDelegate {
         super.viewDidLayoutSubviews()
 
         // Update segmented control frame
-        pageSegmentedControl.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: segmentedControlHeight)
+        pageSegmentedControl.frame = CGRect(x: 0, y: topMargin, width: view.bounds.width, height: segmentedControlHeight)
 
         // Scroll view
         setUpPageScrollView()
@@ -360,7 +374,7 @@ open class DTPagerController: UIViewController, UIScrollViewDelegate {
         // Updating pageScrollView's frame or contentSize will automatically trigger scrollViewDidScroll(_: UIScrollView) and update selectedPageIndex
         // We need to save the value of selectedPageIndex and update pageScrollView's horizontal content offset correctly.
         let index = selectedPageIndex
-        pageScrollView.frame = CGRect(x: 0, y: segmentedControlHeight, width: size.width, height: size.height - segmentedControlHeight)
+        pageScrollView.frame = CGRect(x: 0, y: segmentedControlHeight + topMargin, width: size.width, height: size.height - segmentedControlHeight)
         pageScrollView.contentSize = CGSize(width: pageScrollView.frame.width * CGFloat(numberOfPages), height: 0)
         pageScrollView.contentOffset = contentOffset(forSegmentedIndex: index, withScrollViewWidth: pageScrollView.frame.width, numberOfPages: numberOfPages)
     }
@@ -398,7 +412,7 @@ open class DTPagerController: UIViewController, UIScrollViewDelegate {
             scrollIndicator.frame.size = CGSize(width: view.bounds.width/CGFloat(numberOfPages), height: scrollIndicatorHeight)
         }
 
-        scrollIndicator.frame.origin.y = segmentedControlHeight - scrollIndicatorHeight
+        scrollIndicator.frame.origin.y = segmentedControlHeight - scrollIndicatorHeight + topMargin
         updateScrollIndicatorHorizontalPosition(with: pageScrollView)
     }
 

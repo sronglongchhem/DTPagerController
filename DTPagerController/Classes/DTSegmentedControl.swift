@@ -22,7 +22,7 @@ public protocol DTSegmentedControlProtocol {
     
 }
 
-open class DTSegmentedControl: UISegmentedControl, DTSegmentedControlProtocol {    
+open class DTSegmentedControl: UISegmentedControl, DTSegmentedControlProtocol {
 
     public override init(items: [Any]?) {
         super.init(items: items)
@@ -41,8 +41,7 @@ open class DTSegmentedControl: UISegmentedControl, DTSegmentedControlProtocol {
 
     func commonInit() {
         setTintColor(.clear)
-        setDividerImage(UIImage(), forLeftSegmentState: UIControl.State(), rightSegmentState: UIControl.State.selected, barMetrics: UIBarMetrics.default)
-        setDividerImage(UIImage(), forLeftSegmentState: UIControl.State.selected, rightSegmentState: UIControl.State(), barMetrics: UIBarMetrics.default)
+        self.clearBG()
     }
     
     private func setTintColor(_ color: UIColor) {
@@ -51,5 +50,26 @@ open class DTSegmentedControl: UISegmentedControl, DTSegmentedControlProtocol {
         } else {
             tintColor = color
         }
+    }
+}
+
+
+extension UISegmentedControl {
+    func clearBG() {
+        setBackgroundImage(imageWithColor(color: UIColor.clear), for: .normal, barMetrics: .default)
+        setBackgroundImage(imageWithColor(color: UIColor.clear), for: .normal, barMetrics: .default)
+        setDividerImage(imageWithColor(color: UIColor.clear), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
+    }
+
+    // create a 1x1 image with this color
+    private func imageWithColor(color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+        context!.setFillColor(color.cgColor);
+        context!.fill(rect);
+        let image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return image!
     }
 }
